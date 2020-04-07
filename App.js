@@ -1,12 +1,4 @@
 import React, { Component } from 'react';
-// import './App.css';
-// import LeftSide from "./Components/LeftSide"
-// import RightSide from "./Components/RightSide"
-// import Question from "./Components/Question"
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import quizQuestions from './api/quizQuestions';
-// import sentence from './Components/Sentence';
-// import Quiz from './Components/Quiz';
 
 
 import sentence from './api/Sentence.json';
