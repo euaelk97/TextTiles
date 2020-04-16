@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import sentence from './api/Sentence.json';
 import Form from './api/Form';
 import Story from './api/Story';
+import wordBank from './api/wordBank';
 
 class App extends Component {
   
@@ -15,18 +16,19 @@ class App extends Component {
       syllablesNeeded: 0,
       order: [],
       syllables: [],
-      submitted: false
+      submitted: false,
+      sentenceData: sentence
 
     };
 
   }
     componentDidMount = () => {
       this.getOrder()
-      
+    
     }
 
     // Grab random sentence from sentence file
-    grabRandomPassage = () => {
+    grabRandomSentence = () => {
       let i = Math.floor(Math.random() * sentence.length)
       return sentence[i]
     }
@@ -34,8 +36,9 @@ class App extends Component {
     // Takes sentence and extracts:
     // (1) Order of the words
     // (2) Replace those words with order index number
+    
     getOrder = () => {
-      let random = this.grabRandomPassage()
+      let random = this.grabRandomSentence()
       let randomSentence = random.sentence
       let syllablesNeeded = random.syllablesNeeded
       let pattern = /<[^>]*>/
@@ -43,7 +46,7 @@ class App extends Component {
 
       for (let i = 0; i < syllablesNeeded; i++) {
         let foundSyllable = randomSentence.match(pattern)[0]
-        let orderWord = foundSyllable.split('').splice(1, foundSyllable.length -2).join('') //ex. exclaim
+        let orderWord = foundSyllable.split('').splice(1, foundSyllable.length -2).join('') 
         randomSentence = randomSentence.replace(pattern, `[${i}]`)
         orderArray.push(orderWord)
       }
@@ -56,18 +59,17 @@ class App extends Component {
 
     }
 
-    // Prevent page from reloading when using presses "Return"
+    // Prevent page from reloading when user presses "Return"
     handleFormSubmit = event => {
       event.preventDefault()
       this.setState({
         submitted: true
       })
     }
-
+    
     // When user clicks submit button
     handleSubmitButton = event => {
       const { syllablesNeeded, syllables } = this.state
-      
       const hasSyllables = syllables.filter(syllable => syllable)
 
       if (hasSyllables.length === syllablesNeeded) {
@@ -100,21 +102,9 @@ class App extends Component {
       })
     }
 
-  // let [points, setPoints] = useState(5);
-  // let [correct, setCorrect] = useState(false);
-
-  // need to extract sentences, then display somehow
-    extractJSON(obj, index) {
-    for(const i in obj) {
-      if(i == 0){
-        console.log()
-      }
-    }
-  }
-
-  
   render(){
-    const { sentence, order, syllables, submitted} = this.state
+    const { sentence, order, syllables, submitted } = this.state
+    const list = this.state.sentenceData.map(d => <li>{sentence.prefix} - {sentence.root}</li>);
 
     const story = (
       <div className='main'>
@@ -132,6 +122,7 @@ class App extends Component {
     const form = (
       <div className='main'>
         <div className='button-top-div'>
+          <h2>{this.state.sentence}</h2>
           <button onClick={this.handleAnotherButton}>Another One</button>
         </div>
 
@@ -140,7 +131,8 @@ class App extends Component {
             syllables={syllables}
             order={order}
             handleForm={this.handleFormSubmit}
-            handleInput={this.handleInputChange} />
+            handleInput={this.handleInputChange} 
+            />
         </div>
         <div className='button-bottom-div' >
           <button onClick={this.handleSubmitButton}>Submit</button>
@@ -148,12 +140,34 @@ class App extends Component {
       </div>
 
     )
+
+    const table = (
+      <div className='main-table'>
+        <table>
+          <thead>
+            <tr>
+              <th>prefix</th>
+              <th>root</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.sentenceData.map((data, key) => {
+            return (
+              <tr key={key}>
+                <td>{data.prefix}</td>
+                <td>{data.root}</td>
+              </tr>
+            )})}
+          </tbody>
+        </table>
+      </div>
+    )
     
     return (
-      <div className='container'>
+      <div className='App'>
         <h1>BigWords</h1>
+        <h2>{table}</h2>
         {submitted ? story : form}
-      
       </div>
     )
   }
