@@ -19,9 +19,10 @@ class Story extends Component {
     render() {
         const { sentence, syllables } = this.props
         this.makeStory(sentence, syllables)
-
+        
         return (
             <p>{this.makeStory(sentence, syllables)}</p>
+           
         )
     }
 }

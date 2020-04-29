@@ -1,21 +1,26 @@
 [
-    {
-        "sentence": "The Bank Teller made several <prefix><root> at the branch today", 
-        "prefix": "trans, dur, mis",
-        "root": "ation, action, trials",
-        "syllablesNeeded": 2
-    },
-    {
-        "sentence": "My friend went outside <prefix><root> the best scene", 
-        "prefix": "dur, trans, mis",
-        "root": "trials, action, ation",
-        "syllablesNeeded": 2
-    },
-    {
-        "sentence": "I used google to gather more <prefix><root><suffix> about reptiles",
-        "prefix": "mis, dur, trans",
-        "root": "action, trials, ation", 
-        "syllablesNeeded": 3
-    }
+    
+    
+         {
+                "id": 1,
+                "sentence": "The Bank Teller made several <prefix><root> at the branch today", 
+                "prefix": ["trans, dur, mis"],
+                "root": ["ation, action, trials"],
+                "syllablesNeeded": 2
+            },
+            {
+                "id": 2,
+                "sentence": "My friend went outside <prefix><root> the best scene", 
+                "prefix": ["dur, trans, mis"],
+                "root": ["trials, action, ation"],
+                "syllablesNeeded": 2
+            },
+            {
+                "id": 3,
+                "sentence": "I used google to gather more <prefix><root><suffix> about reptiles",
+                "prefix": ["mis, dur, trans"],
+                "root": ["action, trials, ation"], 
+                "syllablesNeeded": 3
+            }
+            
 ]
-  

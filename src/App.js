@@ -1,10 +1,37 @@
 import React, { Component } from 'react';
-
-
-import sentence from './api/Sentence.json';
 import Form from './api/Form';
 import Story from './api/Story';
-import wordBank from './api/wordBank';
+// import DataTable from './api/DataTable';
+import sentence from './api/Sentence.json';
+import fs from 'fs';
+
+// const fs = require('fs');
+const json_data = require('./api/Sentence.json');
+
+
+const generateElement = (key, value) => {
+  return (
+    <div key={key} className="row">
+      <div className="col-xs-6 ins-label">{key}</div>
+      <div className="col-xs-6">{value}</div>
+    </div>
+  );
+}
+
+function generateData(data) {
+  const newData = Object.keys(data).reduce((result, currentKey) => {
+    if (typeof data[currentKey] === 'string' || data[currentKey] instanceof String){
+      const elementToPush = generateElement(currentKey, data[currentKey]);
+      result.push(elementToPush);
+    } else {
+      const nested = generateData(data[currentKey]);
+      result.push(...nested);
+    }
+    return result;
+  }, [])
+  return newData;
+}
+
 
 class App extends Component {
   
@@ -17,12 +44,19 @@ class App extends Component {
       order: [],
       syllables: [],
       submitted: false,
-      sentenceData: sentence
+      sentenceData: sentence,
+      syllableList: []
 
     };
 
   }
+
     componentDidMount = () => {
+      fetch('./api/Sentence.json').then((response) => response.json()).then((findResponse) => {
+        this.setState({
+          data:findResponse
+        })
+      })
       this.getOrder()
     
     }
@@ -31,6 +65,7 @@ class App extends Component {
     grabRandomSentence = () => {
       let i = Math.floor(Math.random() * sentence.length)
       return sentence[i]
+
     }
 
     // Takes sentence and extracts:
@@ -47,7 +82,7 @@ class App extends Component {
       for (let i = 0; i < syllablesNeeded; i++) {
         let foundSyllable = randomSentence.match(pattern)[0]
         let orderWord = foundSyllable.split('').splice(1, foundSyllable.length -2).join('') 
-        randomSentence = randomSentence.replace(pattern, `[${i}]`)
+        randomSentence = randomSentence.replace(pattern, `[${'__'}]`)
         orderArray.push(orderWord)
       }
 
@@ -56,7 +91,6 @@ class App extends Component {
         syllablesNeeded: syllablesNeeded,
         order: orderArray
       })
-
     }
 
     // Prevent page from reloading when user presses "Return"
@@ -102,10 +136,14 @@ class App extends Component {
       })
     }
 
-  render(){
-    const { sentence, order, syllables, submitted } = this.state
-    const list = this.state.sentenceData.map(d => <li>{sentence.prefix} - {sentence.root}</li>);
+    handleSentenceReturn = event => {
+      this.componentDidMount()
+    }
 
+  render() {
+    const { sentence, order, syllables, submitted, myData } = this.state
+
+    
     const story = (
       <div className='main'>
         <div className='main-story'>
@@ -139,34 +177,14 @@ class App extends Component {
         </div>
       </div>
 
-    )
-
-    const table = (
-      <div className='main-table'>
-        <table>
-          <thead>
-            <tr>
-              <th>prefix</th>
-              <th>root</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.sentenceData.map((data, key) => {
-            return (
-              <tr key={key}>
-                <td>{data.prefix}</td>
-                <td>{data.root}</td>
-              </tr>
-            )})}
-          </tbody>
-        </table>
-      </div>
-    )
+    ) 
     
     return (
       <div className='App'>
         <h1>BigWords</h1>
-        <h2>{table}</h2>
+          <div className = "sentence">
+            {sentence.map}
+          </div>
         {submitted ? story : form}
       </div>
     )
